@@ -11,12 +11,14 @@ function alertError(message) {
 function getUrlImage(type) {
     if(type == 'itunes'){
         return 'images/itunes.png'
+    }else if (type == 'tvmaze'){
+        return 'images/tvmaze.png'
     } else {
         return 'images/itunes.png'
     }
 }
 
-function addResult(name, artist, album, url, type, source) {
+function addResult(name, url, type, source, details) {
     url_image = getUrlImage(source)
     string_result = '<div class="widget widget-table">' +
                         '<div class="widget-header">' +
@@ -35,10 +37,13 @@ function addResult(name, artist, album, url, type, source) {
                                     '</div>'+
                                 '</div>'+
                                 '<div class="col-lg-11 col-md-10 col-sm-9 col-xs-9">'+
-                                    '<div class="label label-info">'+type+'</div> </br></br>'+
-                                    '<strong>Artista:</strong> '+artist+'</br>'+
-                                    '<strong>Album:</strong> '+album+'</br>'+
-                                '</div>'+
+                                '<div class="label label-info">'+type+'</div> </br></br>';
+    for (var key in details) {
+        if (details.hasOwnProperty(key)) {   
+            string_result = string_result + '<strong>'+key+':</strong> '+details[key]+'</br>';     
+        }
+    }
+    string_result = string_result + '</div>'+
                             '</div>'+
                         '</div>'+
                     '</div>';
@@ -83,8 +88,8 @@ function search() {
             if (response.ok){
                 for (let c = 0; c < response.results.length; c++) {
                     const element = response.results[c]
-                    addResult(element.name, element.autor, element.album, 
-                        element.url, element.type, element.source)
+                    addResult(element.name, element.url, element.type, 
+                        element.source, element.details)
                 }
             }else{
                 for(let c=0; c<response.errors.length; c++){
